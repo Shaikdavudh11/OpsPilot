@@ -1,0 +1,10 @@
+{
+  "id": "docker-startup-exit",
+  "title": "Docker Container Exits During Startup",
+  "description": "Containerized microservice crashes immediately upon docker run execution.",
+  "category": "Docker",
+  "environment": "staging",
+  "service_name": "notification-worker",
+  "expected_severity": "high",
+  "raw_logs": "docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: \"/app/entrypoint.sh\": permission denied: unknown.\n2026-10-10T10:45:01.817291000Z standard_init_linux.go:228: exec user process caused: permission denied\n2026-10-10T10:45:02.102000000Z Container notification-worker-inst-1 exited with status code 126\n2026-10-10T10:45:02.115000000Z Healthcheck failed 3 consecutive times: container stopped."
+}

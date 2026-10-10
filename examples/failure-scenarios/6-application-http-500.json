@@ -1,0 +1,10 @@
+{
+  "id": "app-http-500",
+  "title": "Application HTTP 500 Runtime Exception",
+  "description": "Unhandled null reference in checkout request handler causes cascading 500 errors.",
+  "category": "Application",
+  "environment": "production",
+  "service_name": "checkout-service",
+  "expected_severity": "high",
+  "raw_logs": "2026-10-10 14:02:11.891 [ERROR] [uvicorn.error] Exception in ASGI application\nTraceback (most recent call last):\n  File \"/opt/venv/lib/python3.12/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/app/services/checkout.py\", line 87, in process_order\n    user_discount = order_payload[\"discount_profile\"][\"discount_code\"]\nKeyError: 'discount_profile'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/app/api/v1/routes.py\", line 142, in create_checkout_session\n    result = await checkout_service.process_order(request_data)\nTypeError: 'NoneType' object is not subscriptable\n2026-10-10 14:02:11.895 [INFO] [access] 192.168.1.44 - \"POST /api/v1/checkout HTTP/1.1\" 500 Internal Server Error 45ms"
+}

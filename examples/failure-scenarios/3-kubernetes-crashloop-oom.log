@@ -1,0 +1,6 @@
+2026-10-10T08:30:15Z kubelet Node worker-node-04: Task memory limit exceeded in cgroup /kubepods.slice/kubepods-burstable.slice/pod_event-ingestor-84b8d77bf-kx82j.
+2026-10-10T08:30:15Z kernel: [194821.194] event-ingestor invoked oom-killer: gfp_mask=0x1100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=985
+2026-10-10T08:30:15Z kernel: [194821.195] Memory cgroup out of memory: Killed process 384192 (event-ingestor) total-vm:2104524kB, anon-rss:1048128kB, file-rss:1024kB
+2026-10-10T08:30:16Z kubelet Container event-ingestor in pod event-ingestor-84b8d77bf-kx82j was terminated with exit code 137 (Reason: OOMKilled).
+2026-10-10T08:30:45Z kubelet Back-off restarting failed container event-ingestor in pod event-ingestor-84b8d77bf-kx82j_default(9c8e1a-42).
+Status: CrashLoopBackOff (Restart Count: 6).

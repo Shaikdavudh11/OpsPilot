@@ -1,0 +1,15 @@
+2026-10-10 14:02:11.891 [ERROR] [uvicorn.error] Exception in ASGI application
+Traceback (most recent call last):
+  File "/opt/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/app/services/checkout.py", line 87, in process_order
+    user_discount = order_payload["discount_profile"]["discount_code"]
+KeyError: 'discount_profile'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/api/v1/routes.py", line 142, in create_checkout_session
+    result = await checkout_service.process_order(request_data)
+TypeError: 'NoneType' object is not subscriptable
+2026-10-10 14:02:11.895 [INFO] [access] 192.168.1.44 - "POST /api/v1/checkout HTTP/1.1" 500 Internal Server Error 45ms

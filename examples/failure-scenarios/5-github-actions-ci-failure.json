@@ -1,0 +1,10 @@
+{
+  "id": "ci-test-failure",
+  "title": "GitHub Actions CI Test Failure",
+  "description": "Automated regression test suite fails on PR validation pipeline.",
+  "category": "CI/CD",
+  "environment": "ci",
+  "service_name": "api-gateway",
+  "expected_severity": "medium",
+  "raw_logs": "Run pytest tests/ --junitxml=junit/test-results.xml\n============================= test session starts ==============================\nplatform linux -- Python 3.12.3, pytest-8.1.1\ncollected 42 items\n\ntests/unit/test_auth.py ......\n\ntests/unit/test_routing.py ........F........\n\n=================================== FAILURES ===================================\n___________________________ test_rate_limiter_burst ____________________________\n\n    def test_rate_limiter_burst():\n        limiter = TokenBucketLimiter(capacity=10, refill_rate=1.0)\n        for _ in range(10):\n            assert limiter.acquire() is True\n>       assert limiter.acquire() is False\nE       AssertionError: assert True is False\nE       +  where True = <bound method TokenBucketLimiter.acquire of <TokenBucketLimiter capacity=10 tokens=1.0>>()\n\ntests/unit/test_routing.py:48: AssertionError\n----------------------------- Captured stderr call -----------------------------\n[ERROR] RateLimiter: Refill thread executed unexpectedly during lock window\n=========================== short test summary info ============================\nFAILED tests/unit/test_routing.py::test_rate_limiter_burst - AssertionError: assert True is False\n1 failed, 41 passed in 4.12s\n##[error]Process completed with exit code 1."
+}

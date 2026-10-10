@@ -1,0 +1,10 @@
+{
+  "id": "k8s-imagepull-backoff",
+  "title": "Kubernetes ImagePullBackOff",
+  "description": "Deployment cannot schedule pods due to missing image tag in private container registry.",
+  "category": "Kubernetes",
+  "environment": "production",
+  "service_name": "customer-dashboard",
+  "expected_severity": "high",
+  "raw_logs": "Events:\n  Type     Reason     Age                From               Message\n  ----     ------     ----               ----               -------\n  Normal   Scheduled  4m12s              default-scheduler  Successfully assigned default/customer-dashboard-5f968945f-m5mrp to ip-10-0-12-88\n  Normal   Pulling    2m48s (x4 over 4m) kubelet            Pulling image \"registry.internal.corp/frontend/customer-dashboard:v2.14.0-rc3\"\n  Warning  Failed     2m47s (x4 over 4m) kubelet            Failed to pull image \"registry.internal.corp/frontend/customer-dashboard:v2.14.0-rc3\": rpc error: code = NotFound desc = failed to pull and unpack image \"registry.internal.corp/frontend/customer-dashboard:v2.14.0-rc3\": failed to resolve reference: registry.internal.corp/frontend/customer-dashboard:v2.14.0-rc3: not found\n  Warning  Failed     2m47s (x4 over 4m) kubelet            Error: ErrImagePull\n  Normal   BackOff    2m34s (x6 over 4m) kubelet            Back-off pulling image \"registry.internal.corp/frontend/customer-dashboard:v2.14.0-rc3\"\n  Warning  Failed     2m34s (x6 over 4m) kubelet            Error: ImagePullBackOff"
+}

@@ -1,0 +1,28 @@
+name: Sync Backend to Hugging Face Spaces
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare Backend Subtree for Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_REPO: ${{ secrets.HF_SPACE_REPO }} # Format: username/space-name
+        if: ${{ env.HF_TOKEN != '' && env.HF_SPACE_REPO != '' }}
+        run: |
+          git config --global user.email "bot@opspilot.dev"
+          git config --global user.name "OpsPilot Deployer"
+
+          # Push apps/api subfolder directly to Hugging Face Spaces Git repo
+          git subtree split --prefix=apps/api -b hf-deploy
+          git push -f "https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_REPO}" hf-deploy:main

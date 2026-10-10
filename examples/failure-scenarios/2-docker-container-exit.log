@@ -1,0 +1,4 @@
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: "/app/entrypoint.sh": permission denied: unknown.
+2026-10-10T10:45:01.817291000Z standard_init_linux.go:228: exec user process caused: permission denied
+2026-10-10T10:45:02.102000000Z Container notification-worker-inst-1 exited with status code 126
+2026-10-10T10:45:02.115000000Z Healthcheck failed 3 consecutive times: container stopped.
