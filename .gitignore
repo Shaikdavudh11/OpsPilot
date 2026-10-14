@@ -1,8 +1,12 @@
-# Environments
+# Environments & Secrets (NEVER COMMIT)
 .env
-.env.local
-.env.*.local
+.env.*
 *.env
+**/.env
+**/.env.*
+**/*.env
+!.env.example
+!**/.env.example
 
 # Python
 __pycache__/

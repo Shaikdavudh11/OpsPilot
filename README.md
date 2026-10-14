@@ -3,12 +3,18 @@
 OpsPilot is an AI-powered incident investigation assistant engineered for Site Reliability Engineers (SREs), DevOps engineers, and cloud architects. It ingests application error logs, container crashes, Kubernetes pod events, and deployment pipeline failures to produce grounded, hallucination-free diagnostic reports with actionable recommendations.
 
 > [!NOTE]
-> For the comprehensive engineering review, architecture breakdown, and detailed operator runbook, see [Implementation & Runbook Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/implementation_and_runbook.md).
+> ### 📚 Comprehensive Documentation Library:
+> - **[Autonomous Kubernetes Agent Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/k8s-agent/README.md):** Full architecture, detection heuristics, manifest synthesis, pod troubleshooter & Kind cluster guide.
+> - **[Frontend Web Application Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/frontend/README.md):** Next.js 16 App Router, UI components, workbench tabs, and multi-backend routing.
+> - **[Incident API Service Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/api/README.md):** SRE log analysis, secret redaction, prompt injection defense, and AI providers.
+> - **[Unified Deployment Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/deployment/README.md):** Local development, Docker Compose, free cloud tiers, and Kubernetes cluster setup.
 
 ---
 
 ## Key Capabilities
 
+- **Autonomous Kubernetes Copilot:** Inspects any public/private GitHub repository or local codebase, detects language, framework, ports, and environment variables, and generates hardened multi-stage Dockerfiles, production Kubernetes manifests (Deployment, Service, ConfigMap, Secret, Ingress, HPA), and step-by-step rollout runbooks.
+- **Live Pod Diagnostic Studio & Auto-Remediation:** Diagnoses real pod outages (CrashLoopBackOff, OOMKilled 137, ImagePullBackOff, probe failures), extracts root causes, generates YAML patch diffs, and provides operator CLI fix commands.
 - **Factual Evidence Extraction:** Quotes verbatim findings directly from logs. Never hallucinates non-existent lines or unvisited clusters.
 - **Automated Secret Redaction:** Scrubs AWS access keys, GitHub tokens, database passwords in connection strings, Bearer tokens, JWTs, and private keys before passing text to AI models.
 - **Prompt Injection Defense:** Strict separation between system directives and untrusted evidentiary log payloads.
@@ -24,31 +30,42 @@ OpsPilot is an AI-powered incident investigation assistant engineered for Site R
 ```
 OpsPilot/
 ├── apps/
-│   ├── api/                           # FastAPI backend (Python 3.12+)
+│   ├── api/                           # Incident Investigation API (FastAPI, Port 8001)
 │   │   ├── app/
 │   │   │   ├── api/v1/endpoints/      # /health, /api/incidents, /api/demo-scenarios
-│   │   │   ├── core/                  # config.py, security.py (redactor), prompt_templates.py
-│   │   │   ├── db/                    # session.py, models.py (SQLAlchemy)
-│   │   │   ├── schemas/               # Pydantic v2 request/response models
+│   │   │   ├── core/                  # security.py (redactor), prompt_templates.py
+│   │   │   ├── db/                    # models.py, session.py (SQLAlchemy)
 │   │   │   └── services/              # analyzer.py, providers/ (Mock, Gemini, OpenAI)
 │   │   ├── Dockerfile
 │   │   └── requirements.txt
-│   └── web/                           # Next.js 16 (App Router, TypeScript, Tailwind CSS)
+│   │
+│   ├── k8s-agent/                     # Autonomous Kubernetes Copilot (FastAPI, Port 8002)
+│   │   ├── app/
+│   │   │   ├── api/v1/endpoints/      # /health, /api/k8s/analyze-repo, /troubleshoot-pod
+│   │   │   ├── schemas/               # k8s.py (Pydantic v2 validation contracts)
+│   │   │   └── services/              # inspector.py, generator.py, troubleshooter.py
+│   │   ├── Dockerfile
+│   │   └── requirements.txt
+│   │
+│   └── web/                           # Next.js 16 Web Application (Port 3000)
 │       ├── src/
-│       │   ├── app/                   # / (Dashboard), /analyzer, /history
+│       │   ├── app/                   # / (Dashboard), /k8s-agent, /analyzer, /history
 │       │   ├── components/            # UI badges, CommandBox, ResultsView, Navbar
-│       │   └── lib/                   # api.ts, types.ts
+│       │   └── lib/                   # api.ts (Multi-backend router), types.ts
 │       └── Dockerfile
 ├── docs/
-│   ├── architecture.md                # System topology & pipeline specification
-│   └── api.md                         # OpenAPI endpoint specifications & schemas
+│   ├── README.md                      # Documentation index and overview
+│   ├── k8s-agent/                     # Complete Kubernetes Agent documentation (README.md)
+│   ├── frontend/                      # Next.js 16 frontend documentation (README.md)
+│   ├── api/                           # Incident analysis API documentation (README.md)
+│   ├── deployment/                    # Local, Docker Compose, Cloud & K8s deployment guides
+│   ├── architecture.md                # System topology specification
+│   └── api.md                         # OpenAPI specifications
 ├── examples/
 │   └── failure-scenarios/             # 6 standalone realistic failure scenario JSONs
 ├── tests/
-│   └── api/                           # Pytest unit, security, schema, & integration tests
-├── .github/
-│   └── workflows/ci.yml               # Automated CI test and build workflow
-├── docker-compose.yml                 # Multi-container orchestration (Web, API, Postgres)
+│   └── api/                           # Incident API pytest test suite
+├── docker-compose.yml                 # Multi-container orchestration (db, api, k8s-agent, web)
 ├── .env.example
 └── .gitignore
 ```
@@ -64,43 +81,54 @@ OpsPilot/
 
 ---
 
-## Local Development (macOS)
+> [!TIP]
+> For the comprehensive step-by-step local runbook, see the **[Local Setup & Run Guide](file:///Users/shaik/Desktop/DevOpsProjects/OpsPilot/docs/deployment/local_setup.md)**.
 
-### 1. Clone & Setup Environment
+### 1. Configure Environments
 
 ```bash
-cd OpsPilot
-cp .env.example .env
+# Configure API
+cp apps/api/.env.example apps/api/.env
+
+# Configure Kubernetes Agent
+cp apps/k8s-agent/.env.example apps/k8s-agent/.env
+
+# Configure Frontend
+cat <<EOF > apps/web/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:8001
+NEXT_PUBLIC_K8S_API_URL=http://localhost:8002
+EOF
 ```
 
-### 2. Start the Backend API (FastAPI)
+### 2. Start the Incident Backend API (Terminal 1)
 
 ```bash
-# Using uv (recommended) or standard venv:
 cd apps/api
-uv venv .venv
-source .venv/bin/activate
+uv venv .venv && source .venv/bin/activate
 uv pip install -r requirements.txt
-
-# Start FastAPI server on port 8000:
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
+API Documentation: [http://localhost:8001/docs](http://localhost:8001/docs)
 
-Verify backend health:
+### 3. Start the Kubernetes Agent Backend (Terminal 2)
+
 ```bash
-curl http://localhost:8000/health
+cd apps/k8s-agent
+uv venv .venv && source .venv/bin/activate
+uv pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 ```
+K8s Agent Documentation: [http://localhost:8002/docs](http://localhost:8002/docs)
 
-### 3. Start the Frontend (Next.js)
+### 4. Start the Web Frontend (Terminal 3)
 
-In a separate terminal:
 ```bash
 cd apps/web
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 

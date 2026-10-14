@@ -12,6 +12,7 @@ import {
   Cpu,
   AlertCircle,
   RefreshCw,
+  Boxes,
 } from "lucide-react";
 import { opsApi } from "@/lib/api";
 import { HealthResponse } from "@/lib/types";
@@ -44,6 +45,7 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/k8s-agent", label: "K8s Copilot", icon: Boxes },
     { href: "/analyzer", label: "Incident Analyzer", icon: Terminal },
     { href: "/history", label: "Incident History", icon: History },
   ];

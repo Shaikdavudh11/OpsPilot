@@ -34,10 +34,23 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       db:
         condition: service_healthy
+
+  k8s-agent:
+    build:
+      context: ./apps/k8s-agent
+      dockerfile: Dockerfile
+    container_name: opspilot-k8s-agent
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - PORT=8002
+      - HOST=0.0.0.0
+    ports:
+      - "8002:8002"
 
   web:
     build:
@@ -46,11 +59,13 @@ services:
     container_name: opspilot-web
     restart: unless-stopped
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:8001
+      - NEXT_PUBLIC_K8S_API_URL=http://localhost:8002
     ports:
       - "3000:3000"
     depends_on:
       - api
+      - k8s-agent
 
 volumes:
   postgres_data:

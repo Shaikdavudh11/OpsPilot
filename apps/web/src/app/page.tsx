@@ -16,6 +16,8 @@ import {
   Cpu,
   Clock,
   ExternalLink,
+  Boxes,
+  FolderGit2,
 } from "lucide-react";
 import { opsApi } from "@/lib/api";
 import { DemoScenario, SavedIncidentSummary, HealthResponse } from "@/lib/types";
@@ -83,6 +85,13 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <Link
+              href="/k8s-agent"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 transition-colors"
+            >
+              <Boxes className="h-4 w-4" />
+              K8s Copilot
+            </Link>
             <Link
               href="/analyzer"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-emerald-700 transition-colors"
